@@ -11,34 +11,79 @@
 //입력되는 정수의 절댓값은 4,000을 넘지 않는다.
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+int compare(const void *A, const void *B) {
+    int Num1 = *(int *)A;
+    int Num2 = *(int *)B;
+    
+    if (Num1 < Num2) {
+        return -1;
+    }
+    if (Num1 > Num2) {
+        return 1;
+    }
+    return 0;
+}
 
 int arithmetic_mean(int N, int A[]) { //산술평균
-    int result;
+    double result;
     int B = 0;
     
     for (int i = 0; i < N; i++) {
         B = B + A[i];
     }
     
-    result = B / N;
+    result = (double)B / N;
     
-    return result;
+    return (int)round(result);
     
 }
 
-int median(int N, int A[]) { //중앙값
-    
-    return 0;
+int median(int N, int A[]) { //값을 크기 순서대로 나열 후 중앙값
+        
+    if (N == 1)
+        return A[0];
+    else
+        return A[(N + 1) / 2 - 1];
 }
 
-int mode(int N, int A[]) { //최빈값
-    
-    return 0;
+int mode(int N, int A[]) {
+    int summary[8001] = {0,};
+    int max_count = 0;
+    int first_index = -1;
+
+    for (int i = 0; i < N; i++) {
+        summary[A[i] + 4000] += 1;
+    }
+
+    for (int i = 0; i < sizeof(summary) / sizeof(int); i++) {
+        if (max_count < summary[i]) {
+            max_count = summary[i];
+        }
+    }
+
+    for (int i = 0; i < sizeof(summary) / sizeof(int); i++) {
+        if (summary[i] == max_count) {
+            if (first_index != -1) {
+                return i - 4000;
+            } else {
+                first_index = i;
+            }
+        }
+    }
+    return first_index - 4000;
 }
 
 int range(int N, int A[]) { //범위
+    int MAX = 0;
+    int MIN = 0;
     
-    return 0;
+    MAX = A[N - 1];
+    MIN = A[0];
+    
+    return MAX - MIN;
 }
 
 int main(void) {
@@ -47,15 +92,17 @@ int main(void) {
     int arithmetic_mean_result, median_result, mode_result, range_result;
     
     scanf("%d", &N);
-    
-    if (N < 1 && N > 500000) {
-        return 0;
-    }
-    
+
     for (int i = 0; i < N; i++) {
-        scanf("%d", &A);
+        scanf("%d", &A[i]);
     }
+    qsort(A, N, sizeof(int), compare);
     arithmetic_mean_result = arithmetic_mean(N, A);
     printf("%d\n", arithmetic_mean_result);
-    
+    median_result = median(N, A);
+    printf("%d\n", median_result);
+    mode_result = mode(N, A);
+    printf("%d\n", mode_result);
+    range_result = range(N, A);
+    printf("%d", range_result);
 }
