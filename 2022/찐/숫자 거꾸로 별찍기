@@ -1,0 +1,22 @@
+#define _CRT_SECURE_NO_WARNGINS
+#include <stdio.h>
+
+int main(void) {
+    int N;
+    int w;
+    
+    scanf("%d", &N);
+    w = (N*N / 2) + (N / 2);
+    for (int i = 1; i <= N; i++) {
+        for (int k = 1; k <= i; k++) {
+            if (w >= 10) {
+                printf("%d ", w + 1);
+            }
+            else
+                printf("%d  ", w + 1);
+            w--;
+        }
+        printf("\n");
+    }
+}
+
